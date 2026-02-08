@@ -65,6 +65,15 @@ function EnablePolicy() {
      
     });
 
+    function BLUR(){
+MainScreen.classList.add("blind")
+    }
+
+    window.addEventListener("focus", applyAlert)
+     window.addEventListener("blur", BLUR)
+    
+    
+
     alert("Screenshot Protection: ON");
 }
 
@@ -83,4 +92,5 @@ Toggle.addEventListener("click", () => {
     } else {
         NoPolicy();
     }
+
 });
