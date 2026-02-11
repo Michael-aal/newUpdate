@@ -6,34 +6,31 @@ let screenshotMode = false;
 
 // Alerts
 function applyAlert() {
-    Mainscreen.classList.add("blind");
-    alert("Error: Security threat!");
+    window.addEventListener("focus", Unblur)
+    window.addEventListener("blur", Blur)
+    alert("Screenshot Protection: ON");
+    alert("You can't use any Screenshot app right now!");
 }
 
 function removeAlert() {
+    window.addEventListener("blur" , Unblur)
+    alert("Screenshot Protection: OFF");
+    alert("You can use your screenshot app now!");
+}
+
+function Blur(){
+        Mainscreen.classList.add("blind");
+}
+
+function Unblur(){
     Mainscreen.classList.remove("blind");
-    alert("You can use your screenshot now!");
+
 }
 
 // Enable protection
 function EnablePolicy() {
-    isProtected = true;
+
     screenshotMode = false;
-
-    // Detect tab switch / window blur
-    document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-            screenshotMode = true;
-
-        }
-    });
-
-    window.addEventListener("blur", () => {
-        if (isProtected) {
-            screenshotMode = true;
-        
-        }
-    });
 
     // Detect PrintScreen
     document.addEventListener("keydown", (e) => {
@@ -65,32 +62,22 @@ function EnablePolicy() {
      
     });
 
-    function BLUR(){
-MainScreen.classList.add("blind")
-    }
-
-    window.addEventListener("focus", applyAlert)
-     window.addEventListener("blur", BLUR)
-    
-    
-
-    alert("Screenshot Protection: ON");
 }
 
 // Disable protection
 function NoPolicy() {
-    isProtected = false;
     screenshotMode = false;
-    removeAlert();
-    alert("Screenshot Protection: OFF");
 }
 
 // Toggle button
 Toggle.addEventListener("click", () => {
     if (!isProtected) {
+        applyAlert()
         EnablePolicy();
+        isProtected = true
     } else {
         NoPolicy();
+        isProtected = false
+         removeAlert();
     }
-
 });

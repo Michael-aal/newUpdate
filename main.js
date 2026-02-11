@@ -1,7 +1,5 @@
 
 
-
-
 //the  interface  section 
 
         // Get elements
@@ -99,8 +97,7 @@ const browserView = document.getElementById("browserView");
 const ContentWrapper = document.querySelector(".content-wrapper")
 searchBtn.addEventListener("click", ()=>{
 
-  searchFrame.style = "z-index: 1;"
-ContentWrapper.style = " z-index: 0;"
+
 
 const searchBar = document.getElementById("searchBar").value
 console.log(searchBar)
@@ -123,53 +120,3 @@ function TRim(){
 }
 
 
-
-
-class SecureBrowser {
-  constructor() {
-    this.engine = new BrowserEngine();
-    this.security = new SecurityLayer();
-    this.privacy = new PrivacyControls();
-    this.deathManager = new DeathManager();
-    this.setupEventListeners();
-  }
-
-  setupEventListeners() {
-    // Setup navigation events
-    document.addEventListener('DOMContentLoaded', () => {
-      this.setupNavigation();
-    });
-    
-    // Setup cleanup schedule
-    setInterval(() => {
-      this.deathManager.cleanupExpiredBackups();
-    }, 24 * 60 * 60 * 1000); // Daily
-  }
-
-  async openPrivateTab(url) {
-    // Enable private mode
-    const tab = await this.engine.navigate(url);
-    tab.privateMode = true;
-    
-    // Clear cookies for this tab
-    tab.cookies = {};
-    
-    return tab;
-  }
-
-  async closeAccount(userId) {
-    // Close all sessions
-    this.engine.closeAllTabs();
-    
-    // Close account
-    return this.deathManager.closeAccount(userId);
-  }
-
-  async restoreAccount(backupId) {
-    const data = this.deathManager.restoreAccount(backupId);
-    if (!data) return null;
-    
-    // Restore user session
-    return this.security.decrypt(data);
-  }
-}
