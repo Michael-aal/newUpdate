@@ -27,7 +27,7 @@ if (signupForm) {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       alert("Admin account created!");
-      window.location.href = "browser.html";
+      window.location.href = "dashboard.html";
     } catch (error) {
       alert(error.message);
     }

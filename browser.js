@@ -5,7 +5,8 @@
             const resultsDiv = document.getElementById('result');
             const Results = document.querySelector(".G_result")
             const loading = document.getElementById('loading');
-      
+            const Gremove = document.querySelector(".G_result")
+            Gremove.style = "display: none;"
 
             if (!query) return;
 
@@ -73,106 +74,14 @@
             if (e.key === 'Enter') SearchBTN();
         });
 
-
-
-
-        const sidebar = document.getElementById('sidebars');
-        const rightPanel = document.getElementById('rightPanel');
-        const toggleSidebar = document.querySelector('.Open');
-
-        const screen = document.querySelector(".screen")
-        const overlay = document.getElementById('overlay');
-        const closeSidebar = document.querySelector('.Close');
-        const closeRightPanel = document.getElementById('closeRightPanel');
-        const searchFrame = document.getElementById("searchFrame");
-
-
-        // Toggle sidebar
-        toggleSidebar.addEventListener('click', () => {
-            MenuBtnON()
-
-            toggleSidebar.classList.add("active")
-            closeSidebar.classList.add("active")
-        });
-
-
-        // Close sidebar
-        closeSidebar.addEventListener('click', () => {
-            MenuBtnOFF()
-            toggleSidebar.classList.remove("active")
-            closeSidebar.classList.remove("active")
-        });
-
-
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 1024) {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            }
-            if (window.innerWidth >= 1280) {
-                rightPanel.classList.remove('active');
-                overlay.classList.remove('active');
-            }
-        });
-
-        // Toggle switches functionality
-        const toggleSwitches = document.querySelectorAll('.toggle-switch');
-        toggleSwitches.forEach(toggle => {
-
-            toggle.addEventListener('click', () => {
-                toggle.classList.toggle('off');
-            });
-        });
-
-
-        // Tab navigation
-        const tabItems = document.querySelectorAll('.tab-nav-item');
-        tabItems.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabItems.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-            });
-        });
-
-        // Category buttons
-        const categoryBtns = document.querySelectorAll('.category-btn');
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                categoryBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            });
-        });
-
-        // Carousel dots
-        const carouselDots = document.querySelectorAll('.carousel-dot');
-        carouselDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                carouselDots.forEach(d => d.classList.remove('active'));
-                dot.classList.add('active');
-            });
-        });
-
-
-
-
-
-
-
-        // Toggle sidebar
-        function MenuBtnON() {
-         sidebar.classList.add('active');
-         overlay.classList.add("active")
-        }
-
-
-        // Close sidebar
-        function MenuBtnOFF() {
-            sidebar.classList.remove('active');
-            overlay.classList.remove("active")
-
-        }
-
-
+        
     
+      const sidebar = document.getElementById('sidebar');
+        const rightPanel = document.getElementById('rightPanel');
+        const overlay = document.getElementById('overlay');
+       
+            const screen = document.querySelector(".screen")
+                 screen.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });

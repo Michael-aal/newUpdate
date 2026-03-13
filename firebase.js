@@ -1,18 +1,16 @@
 
-// Your Firebase config
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// Your Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyBwVJ909GsNFVEA6y7YHrsKfinDBZRg_QQ",
-  authDomain: "qry-pti.firebaseapp.com",
-  projectId: "qry-pti",
-  storageBucket: "qry-pti.firebasestorage.app",
-  messagingSenderId: "658803269980",
-  appId: "1:658803269980:web:e770b1ff9a5ed174cde199"
+  apiKey: "AIzaSyDHIw0tEXMXwHap3On_DLNxnpmXlnphR_k",
+  authDomain: "qrypti.firebaseapp.com",
+  projectId: "qrypti",
+  storageBucket: "qrypti.firebasestorage.app",
+  messagingSenderId: "42425410922",
+  appId: "1:42425410922:web:0ae9f83f072db639ae3113"
 };
 
 // Initialize Firebase
@@ -33,4 +31,3 @@ async function testFirebase() {
 }
 
 testFirebase();
-// export default firebaseConfg

@@ -1,8 +1,14 @@
 // db.js
-import mongoose from "mongoose";
+import pg from "pg";
+const { Pool } = pg;
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
 export const connectDB = async () => {
-  await mongoose.connect(process.env.MONGO_URI);
-  console.log("MongoDB connected");
+  await pool.connect();
+  console.log("PostgreSQL connected");
 };
 
+export default pool;
