@@ -1,8 +1,14 @@
-    async function performSearch() {
-            const query = document.getElementById('query').value;
+    async function SearchBTN() {
+      location.href = "Browser.html"
+             const  query = document.getElementById('query').value;
             const resultsDiv = document.getElementById('results');
+            const Results = document.querySelector(".G_result")
             const loading = document.getElementById('loading');
             const screen = document.querySelector(".screen")
+            // const InputUrl = document.querySelector(".InputUrl")
+          
+          
+            console.log(query)
             if (!query) return;
 
             // Setup
@@ -16,19 +22,13 @@
                         'X-API-KEY': 'd32e7442a85a07205e089f17093cf2f785149944', // <--- PASTE KEY HERE
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ q: query })
+                    body: JSON.stringify({ q: query})
                 });
 
                 const data = await response.json();
                 loading.style.display = 'none';
 
 
-                   setTimeout(() => {
-        screen.scrollTo({
-            top: 400, // Adjust this number to your liking
-            behavior: 'smooth'
-        });
-    }, 100);
                 // Render Results
                 data.organic.forEach(item => {
                     const div = document.createElement('div');
@@ -44,22 +44,37 @@
             } catch (error) {
              location.href ="err.html"
             }
+
+
+
+//  THE LOGIC FOR THE GEMINI AI
+  console.log(query)
+
+  if (!query) return;
+
+//   Results.innerHTML += `<p><strong>You:</strong> ${query}</p>`;
+
+  const response = await fetch("http://localhost:3000/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ query })
+  });
+
+  const data = await response.json();
+//   data = data.replace(/\*/g, "")
+  Results.innerHTML += `<p><h4>Gemini:</h4> ${data.reply}</p>`;
+  query.value = "";
+  console.log(typeof data)
+
         }
 
         // Allow "Enter" key to trigger search
         document.getElementById('query').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') performSearch();
+            if (e.key === 'Enter') SearchBTN();
         });
 
+        
+    
 
-
-        function redirectToResult(url) {
-    console.log("User clicked on:", url);
-    // You could save this click to a database here
-    window.location.href = url; // This redirects the current page to the result
-
-
-}
-
-
-   

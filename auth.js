@@ -1,46 +1,168 @@
-// routes/auth.js
-import express from "express";
-import bcrypt from "bcrypt";
-import User from "../models/User.js";
+// ================= IMPORTS =================
+import { auth } from "./firebase.js";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-const router = express.Router();
+// ================= SIGNUP =================
+const signupForm = document.getElementById("signupForm");
+if (signupForm) {
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-router.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
 
-  const exists = await User.findOne({ email });
-  if (exists) return res.status(400).json({ msg: "User exists" });
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
 
-  const hashed = await bcrypt.hash(password, 10);
-  const user = await User.create({ email, password: hashed });
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Admin account created!");
+      window.location.href = "browser.html";
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}
 
-  res.json({ msg: "Signup successful" });
-});
+// ================= PASSWORD STRENGTH =================
+const passwordInput = document.getElementById("password");
+const strengthBar = document.getElementById("strengthBar");
+const strengthText = document.getElementById("strengthText");
 
-export default router;
+if (passwordInput && strengthBar && strengthText) {
+  passwordInput.addEventListener("input", () => {
+    const value = passwordInput.value;
+    let strength = 0;
 
+    if (value.length >= 6) strength++;
+    if (/[A-Z]/.test(value)) strength++;
+    if (/[0-9]/.test(value)) strength++;
+    if (/[^A-Za-z0-9]/.test(value)) strength++;
 
+    switch (strength) {
+      case 0:
+      case 1:
+        strengthBar.style.width = "25%";
+        strengthBar.style.background = "#dc2626";
+        strengthText.textContent = "Weak password";
+        strengthText.style.color = "#dc2626";
+        break;
+      case 2:
+        strengthBar.style.width = "50%";
+        strengthBar.style.background = "#f59e0b";
+        strengthText.textContent = "Moderate password";
+        strengthText.style.color = "#f59e0b";
+        break;
+      case 3:
+        strengthBar.style.width = "75%";
+        strengthBar.style.background = "#2563eb";
+        strengthText.textContent = "Strong password";
+        strengthText.style.color = "#2563eb";
+        break;
+      case 4:
+        strengthBar.style.width = "100%";
+        strengthBar.style.background = "#16a34a";
+        strengthText.textContent = "Very strong password";
+        strengthText.style.color = "#16a34a";
+        break;
+    }
+  });
+}
 
+// ================= SHOW/HIDE PASSWORD =================
+function setupToggle(inputId, toggleId) {
+  const input = document.getElementById(inputId);
+  const toggle = document.getElementById(toggleId);
 
-import jwt from "jsonwebtoken";
+  if (!input || !toggle) return;
 
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  toggle.addEventListener("click", () => {
+    const isPassword = input.type === "password";
+    input.type = isPassword ? "text" : "password";
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ msg: "Invalid credentials" });
+    const icon = toggle.querySelector("i");
+    if (icon) {
+      icon.classList.toggle("fa-eye");
+      icon.classList.toggle("fa-eye-slash");
+    }
+  });
+}
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(400).json({ msg: "Invalid credentials" });
+setupToggle("password", "togglePassword");
+setupToggle("confirmPassword", "toggleConfirmPassword");
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-  res.json({ token });
-});
+// ================= LOGIN =================
+const loginForm = document.getElementById("loginForm");
+const errorBox = document.getElementById("errorBox");
+const rememberMe = document.getElementById("rememberMe");
+const forgotPassword = document.getElementById("forgotPassword");
 
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (errorBox) errorBox.style.display = "none";
 
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
+    try {
+      await setPersistence(
+        auth,
+        rememberMe && rememberMe.checked
+          ? browserLocalPersistence
+          : browserSessionPersistence
+      );
 
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "dashboard.html";
 
+    } catch (error) {
+      if (errorBox) {
+        errorBox.innerText = error.message;
+        errorBox.style.display = "block";
+      } else {
+        alert(error.message);
+      }
+    }
+  });
+}
 
-import authRoutes from "./routes/auth.js";
-app.use("/api/auth", authRoutes);
+// ================= FORGOT PASSWORD =================
+if (forgotPassword) {
+  forgotPassword.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    if (!email) {
+      if (errorBox) {
+        errorBox.innerText = "Please enter your email first.";
+        errorBox.style.display = "block";
+      }
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      if (errorBox) {
+        errorBox.style.color = "green";
+        errorBox.innerText = "Password reset email sent successfully.";
+        errorBox.style.display = "block";
+      }
+    } catch (error) {
+      if (errorBox) {
+        errorBox.innerText = error.message;
+        errorBox.style.display = "block";
+      }
+    }
+  });
+}
